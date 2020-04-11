@@ -1,0 +1,30 @@
+InputElement
+  WhiteSpace 合法unicode表示空格
+  LineTerminator 换行符
+  Comment 注释
+  CommonToken 
+    Identifier  变量名
+    Keywords  关键字 futureReservedKeywords: enum
+    Punctuator 符号
+    NumericLiteral 数字直接量
+    StringLiteral 字符串直接量
+    RegularExpressionLiteral 正则直接量
+    Template 模版
+
+if (a < 100) {
+  b += a++
+}
+
+IF Statement
+  Expression
+  Statement
+    Expression
+      =
+        b
+        Expression
+          a++
+
+
+a.b = 3
+
+delete a.b

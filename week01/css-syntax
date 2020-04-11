@@ -1,0 +1,11 @@
+stylesheet
+  : [ CHARSET_SYM STRING ';' ]? @charset?
+    [ import ] @import
+    [ ruleset | media | page ] @media @page
+  ;
+
+.cls {
+  prop1
+  prop2
+  ....
+}
