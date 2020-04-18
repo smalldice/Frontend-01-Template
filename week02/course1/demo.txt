@@ -1,0 +1,25 @@
+产生式（BNF）
+
+用尖括号扩起来的名称来表示语法结构名
+
+语法结构分成基础结构和需要用其他语法结构定义的复合结构
+
+*表示重复多次
+
+|表示或
+
++表示至少一次
+
+"a"
+
+"b"
+
+<Program> := ("a"+ | "b"+)+
+<Program> := <Program> "a"+ | <Program> "b"+
+
+abababbbbbaaa
+
+
+<Number> = "0" | "1" | . | "9"
+<DecimalNumber> = "0" | (("1" | ... | "9") <Number>* )
+<Expression> = <DecimalNumber> | <Expression> "+" <DecimalNumber>

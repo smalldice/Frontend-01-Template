@@ -1,0 +1,43 @@
+``` 上下文无关文法
+<Number> = "0" | ... | "9"
+
+<DecimalNumber> = "0" | (("1" | ... "9") <Number>*)
+
+<PrimaryExpression> = <DecimalNumber> |
+                      "(" <LogicalExpression> ")"    
+
+<MultiplicativeExpress> = <PrimaryExpression> |
+                          <MultiplicativeExpress> "*" <PrimaryExpression> |
+                          <MultiplicativeExpress> "/" <PrimaryExpression>
+
+<AdditiveExpression> = <MultiplicativeExpress> |
+                       <AdditiveExpression> '+' <MultiplicativeExpress> |
+                       <AdditiveExpression> '-' <MultiplicativeExpress>
+
+<LogicalExpression> = <AdditiveExpression> |
+                      <LogicalExpression> "||" <AdditiveExpression> |
+                      <LogicalExpression> "&&" <AdditiveExpression>
+
+递归形式：
+<定义> = <其他定义> |
+        <定义> "连接符1" <其他定义> |
+        <定义> "链接符2" <其他定义> |
+        ...
+        <定义> "链接符n" <其他定义>
+
+"a" <b> "c" ::= "a" "x" "c"
+
+1型
+"```四则运算"
+<LogicalExpression> "```" = "```四则运算"
+                            <AdditiveExpression> |
+                            (<LogicalExpression> "||" <AdditiveExpression>) |
+                            (<LogicalExpression> "&&" <AdditiveExpression>)
+                            "```"
+
+
+正则
+
+<Number> = "0" | ... | "9"
+
+<DecimalNumber> = /0|[1-9]<Number>*/
