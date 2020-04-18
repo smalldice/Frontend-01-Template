@@ -6,24 +6,35 @@
 <PrimaryExpression> = <DecimalNumber> |
                       "(" <LogicalExpression> ")"    
 
-<MultiplicativeExpress> = <PrimaryExpression> |
-                          <MultiplicativeExpress> "*" <PrimaryExpression> |
-                          <MultiplicativeExpress> "/" <PrimaryExpression>
+<MultiplicativeExpression> = <PrimaryExpression> |
+                          <MultiplicativeExpression> "*" <PrimaryExpression> |
+                          <MultiplicativeExpression> "/" <PrimaryExpression>
 
-<AdditiveExpression> = <MultiplicativeExpress> |
-                       <AdditiveExpression> '+' <MultiplicativeExpress> |
-                       <AdditiveExpression> '-' <MultiplicativeExpress>
+<AdditiveExpression> = <MultiplicativeExpression> |
+                       <AdditiveExpression> '+' <MultiplicativeExpression> |
+                       <AdditiveExpression> '-' <MultiplicativeExpression>
 
 <LogicalExpression> = <AdditiveExpression> |
                       <LogicalExpression> "||" <AdditiveExpression> |
                       <LogicalExpression> "&&" <AdditiveExpression>
 
+<ExpExpression> = <MultiplicativeExpression> |
+                  <MultiplicativeExpression> '**' <ExpExpression> (右结合)
+
 递归形式：
+左结合：
 <定义> = <其他定义> |
         <定义> "连接符1" <其他定义> |
         <定义> "链接符2" <其他定义> |
         ...
         <定义> "链接符n" <其他定义>
+
+右结合:
+<定义> = <其他定义> |
+        <其他定义> "连接符1" <定义> |
+        <其他定义> "链接符2" <定义> |
+        ...
+        <其他定义> "链接符n" <定义>
 
 "a" <b> "c" ::= "a" "x" "c"
 
