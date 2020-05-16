@@ -73,6 +73,14 @@ while (queue.length) {
 
   set.add(current.object)
 
+  let proto = Object.getPrototypeOf(current.object)
+
+  if (proto) {
+    queue.push({
+      path: current.path.concat('__proto__'),
+      object: proto
+    })
+  }
 
   for (let p of Object.getOwnPropertyNames(current.object)) {
     const property = Object.getOwnPropertyDescriptor(current.object, p)
