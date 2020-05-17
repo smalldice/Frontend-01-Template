@@ -62,10 +62,9 @@ ${this.bodyText}`
 
         connection.on('data', (data) => {
           parser.receive(data.toString())
-          console.log(parser.statusLine)
-          console.log(parser.headers)
+          
           if (parser.isFinished) {
-            resolve(parser.getResponse)
+            resolve(parser.response)
           }
 
           connection.end()
@@ -105,21 +104,23 @@ class ResponseParser {
   }
 
   get isFinished () {
+    console.log(this.bodyParser && this.bodyParser.isFinished)
     return this.bodyParser && this.bodyParser.isFinished
   }
 
-  get Response () {
+  get response () {
     this.statusLine.match(/HTTP\/1.1 ([0-9])+ ([\s\S]+)/)
+
     return {
       statusCode: RegExp.$1,
-      statusText: RegExp.$s,
+      statusText: RegExp.$2,
       headers: this.headers,
       body: this.bodyParser.content.join('')
     }
   }
 
   receive (string) {
-    for (let i = 0; i< string.length; i++) {
+    for (let i = 0; i < string.length; i++) {
       this.receiveChar(string.charAt(i))
     }
   }
@@ -168,7 +169,6 @@ class ResponseParser {
         this.current = this.WAITING_BODY
       }
     } else if(this.current === this.WAITING_BODY) {
-      console.log(JSON.stringify(char))
       this.bodyParser.receive(char)
 
       if (this.bodyParser.isFinished) {
@@ -196,7 +196,7 @@ class TrunkedBodyParser {
     if (this.current === this.WAITING_LENGTH) {
       if (char === '\r') {
         if (this.length === 0) {
-          console.log(this.content)
+          console.log('===', this.content)
           this.isFinished = true
         }
         this.current = this.WAITING_LENGTH_LINE_END
@@ -209,8 +209,13 @@ class TrunkedBodyParser {
         this.current = this.READING_TRUNK
       }
     } else if(this.current === this.READING_TRUNK) {
-      this.content.push(char)
+      // \r \n 这些字符不会占用length， 而这里的length 有可能是负值 是由\r\n产生的， 所以有length > 0 可以去除\r\n 对body的影响
+      if (this.length > 0) {
+        this.content.push(char)
+      }
+
       this.length--
+
       if (this.length === 0) {
         this.current = this.WAITING_NEW_LINE
       }
@@ -219,7 +224,7 @@ class TrunkedBodyParser {
         this.current = this.WAITING_NEW_LINE_END
       }
     } else if(this.current === this.WAITING_NEW_LINE_END) {
-      if (char === '\n' && this.isFinished) {
+      if (char === '\n') {
         this.current = this.WAITING_LENGTH
       }
     }
@@ -238,30 +243,6 @@ let request = new Request({
 })
 
 request.send().then(data => {
+  console.log('1111', data)
   console.log('response: ===============\n', data, '=====================\n')
 })
-
-// const client = net.createConnection({ host: '127.0.0.1', port: 3000 }, () => {
-//   console.log('connected to server!')
-//   client.write(new Request({
-//     method: 'POST',
-//     path: '/',
-//     port: 3000,
-//     body: {
-//       name: 'xjh'
-//     }
-//   }).toString())
-// })
-
-// client.on('data', (data) => {
-//   console.log('data', data.toString())
-//   client.end()
-// })
-
-// client.on('end', () => {
-//   console.log('connection has been closed')
-// })
-
-// client.on('error', (err) => {
-//   console.log(err);
-// })
