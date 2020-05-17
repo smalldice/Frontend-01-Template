@@ -7,7 +7,7 @@
 // response body:    <html><title>response 4040</title></html>
 
 const net = require('net')
-
+const { parseHTML } = require('./parse')
 /* 
  * method: url = host + port + path
  * body: k/v
@@ -104,7 +104,6 @@ class ResponseParser {
   }
 
   get isFinished () {
-    console.log(this.bodyParser && this.bodyParser.isFinished)
     return this.bodyParser && this.bodyParser.isFinished
   }
 
@@ -120,6 +119,7 @@ class ResponseParser {
   }
 
   receive (string) {
+    console.log(string)
     for (let i = 0; i < string.length; i++) {
       this.receiveChar(string.charAt(i))
     }
@@ -196,21 +196,19 @@ class TrunkedBodyParser {
     if (this.current === this.WAITING_LENGTH) {
       if (char === '\r') {
         if (this.length === 0) {
-          console.log('===', this.content)
           this.isFinished = true
         }
         this.current = this.WAITING_LENGTH_LINE_END
       } else {
         this.length *= 16
-        this.length = parseInt(char, 16)
-        console.log(char, this.length)
+        this.length += parseInt(char, 16)
       }
     } else if(this.current === this.WAITING_LENGTH_LINE_END) {
       if (char === '\n') {
         this.current = this.READING_TRUNK
       }
     } else if(this.current === this.READING_TRUNK) {
-      if (this.length > 0) {
+      if (char !== '\r' && char !=='\n') {
         this.content.push(char)
       }
 
@@ -243,6 +241,6 @@ let request = new Request({
 })
 
 request.send().then(data => {
-  console.log('1111', data)
-  console.log('response: ===============\n', data, '=====================\n')
+  // console.log('response: \n=====================\n', data.body, '\n=====================\n')
+  console.log('response: \n=====================\n', parseHTML(data.body), '\n=====================\n')
 })
