@@ -3,91 +3,91 @@
 // 参考kmp算法 mention: 生成状态
 
 // 作业1
-// function isStr (str) {
-//   return typeof str === 'string'
-// }
+function isStr (str) {
+  return typeof str === 'string'
+}
 
-// ;(
-//   function () {
-//     function match (str) {
-//       if (!isStr(str)) return false
+;(
+  function () {
+    function match (str) {
+      if (!isStr(str)) return false
 
-//       var state = start
-//       for (let c of str) {
-//         state = state(c)
-//       }
+      var state = start
+      for (let c of str) {
+        state = state(c)
+      }
 
-//       return state === end
-//     }
+      return state === end
+    }
 
-//     function start(c) {
-//       if (c === 'a') {
-//         return foundB
-//       } else {
-//         return start
-//       }
-//     }
+    function start(c) {
+      if (c === 'a') {
+        return foundB
+      } else {
+        return start
+      }
+    }
 
-//     function foundB(c) {
-//       if (c === 'b') {
-//         return foundA1
-//       } else {
-//         return start(c)
-//       }
-//     }
+    function foundB(c) {
+      if (c === 'b') {
+        return foundA1
+      } else {
+        return start(c)
+      }
+    }
 
-//     function foundA1 (c) {
-//       if (c === 'a') {
-//         return foundB1
-//       } else {
-//         return start(c)
-//       }
-//     }
+    function foundA1 (c) {
+      if (c === 'a') {
+        return foundB1
+      } else {
+        return start(c)
+      }
+    }
 
-//     function foundB1 (c) {
-//       if (c === 'b') {
-//         return foundA2
-//       } else {
-//         return start(c)
-//       }
-//     }
+    function foundB1 (c) {
+      if (c === 'b') {
+        return foundA2
+      } else {
+        return start(c)
+      }
+    }
 
 
-//     function foundA2 (c) {
-//       if (c === 'a') {
-//         return foundB2
-//       } else {
-//         return start(c)
-//       }
-//     }
+    function foundA2 (c) {
+      if (c === 'a') {
+        return foundB2
+      } else {
+        return start(c)
+      }
+    }
 
-//     function foundB2 (c) {
-//       if (c === 'b') {
-//         return foundX
-//       } else {
-//         return start(c)
-//       }
-//     }
+    function foundB2 (c) {
+      if (c === 'b') {
+        return foundX
+      } else {
+        return start(c)
+      }
+    }
 
-//     function foundX(c) {
-//       if (c === 'x') {
-//         return end
-//       } else {
-//         return start(c)
-//       }
-//     }
+    function foundX(c) {
+      if (c === 'x') {
+        return end
+      } else {
+        return start(c)
+      }
+    }
 
-//     function end (c) {
-//       return end
-//     }
+    function end (c) {
+      return end
+    }
 
-//     console.log(match('abababx')) // true
-//     console.log(match('aabababx')) // true
-//     console.log(match('abcabx')) // false
-//     console.log(match('abababxx')) // true
-//     console.log(match('abababax')) // false
-//   }
-// )();
+    console.log(match('abababx')) // true
+    console.log(match('aabababx')) // true
+    console.log(match('abcabx')) // false
+    console.log(match('abababxx')) // true
+    console.log(match('abababax')) // false
+  }
+)();
 
 // 2. 挑战题
 // 1. 将functionName 定义好
@@ -118,26 +118,24 @@ function formatReg(str) {
       }
     }
 
-    functions.push({
-      callback: i === 0 ? start : function (input) {
-        if (input === c) {
-          if (i === charList.length - 1) {
-            return end
-          } else {
-            return i + 1
-          }
+    functions.push(i === 0 ? start : function (input) {
+      if (input === c) {
+        if (i === charList.length - 1) {
+          return end
         } else {
-          return start(input)
+          return i + 1
         }
+      } else {
+        return start(input)
       }
     })
   })
-  console.log(functions.map(func => func.callback))
+
   
   return class Match {
     constructor() {
       this.functions = functions
-      this.start = functions[0].callback
+      this.start = functions[0]
       this.end = end
     }
 
@@ -145,7 +143,7 @@ function formatReg(str) {
       let state = this.start
 
       for (let c of str) {
-        state = typeof state(c) === 'number' ? functions[state(c)].callback : state(c)
+        state = typeof state(c) === 'number' ? functions[state(c)] : state(c)
       }
 
       return state === this.end
@@ -158,4 +156,7 @@ function match(reg, target) {
   return match.match(target)
 }
 
-console.log(match('a', ''))
+console.log(match('abab', 'aababx')) // true
+console.log(match('abab', 'ababxx')) // true
+console.log(match('abab', 'abaxbx')) // false
+console.log(match('abab', 'aba')) // false
