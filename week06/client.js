@@ -8,10 +8,10 @@
 
 const net = require('net')
 const { parseHTML } = require('./parse')
-/* 
+/*
  * method: url = host + port + path
  * body: k/v
- * headers 
+ * headers
  */
 // 请求
 class Request {
@@ -32,18 +32,22 @@ class Request {
     }
 
     if (this.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
-      this.bodyText = Object.keys(this.body).map(key => {
-        return `${key}=${encodeURIComponent(this.body[key])}`
-      }).join('&')
+      this.bodyText = Object.keys(this.body)
+        .map((key) => {
+          return `${key}=${encodeURIComponent(this.body[key])}`
+        })
+        .join('&')
     }
 
     this.headers['Content-Length'] = this.bodyText.length
   }
 
-  toString () {
+  toString() {
     const str = `
 ${this.method} ${this.path} HTTP/1.1\r
-${Object.keys(this.headers).map(key => `${key}: ${this.headers[key]}`).join('\r\n')}\r
+${Object.keys(this.headers)
+  .map((key) => `${key}: ${this.headers[key]}`)
+  .join('\r\n')}\r
 \r
 ${this.bodyText}`
 
@@ -56,13 +60,16 @@ ${this.bodyText}`
       if (connection) {
         connection.write(this.toString())
       } else {
-        connection = net.createConnection({ host: this.host, port: this.port}, () => {
-          connection.write(this.toString())
-        })
+        connection = net.createConnection(
+          { host: this.host, port: this.port },
+          () => {
+            connection.write(this.toString())
+          }
+        )
 
         connection.on('data', (data) => {
           parser.receive(data.toString())
-          
+
           if (parser.isFinished) {
             resolve(parser.response)
           }
@@ -79,35 +86,33 @@ ${this.bodyText}`
   }
 }
 
-class Response {
-  
-}
+class Response {}
 
 class ResponseParser {
-  constructor () {
-    this.WAITING_STATUS_LINE = 0;
-    this.WAITING_STATUS_LINE_END = 1;
-    this.WAITING_HEADER_NAME = 2;
-    this.WAITING_HEADER_SPACE = 3;
-    this.WAITING_HEADER_VALUE = 4;
-    this.WAITING_HEADER_LINE_END = 5;
-    this.WAITING_HEADER_BLOCK_END = 6;
-    this.WAITING_BODY = 7;
+  constructor() {
+    this.WAITING_STATUS_LINE = 0
+    this.WAITING_STATUS_LINE_END = 1
+    this.WAITING_HEADER_NAME = 2
+    this.WAITING_HEADER_SPACE = 3
+    this.WAITING_HEADER_VALUE = 4
+    this.WAITING_HEADER_LINE_END = 5
+    this.WAITING_HEADER_BLOCK_END = 6
+    this.WAITING_BODY = 7
 
-    this.current = this.WAITING_STATUS_LINE;
-    this.statusLine = '';
-    this.headers = {};
-    this.headerName = '';
-    this.headerValue = '';
-    this.bodyParser = null;
-    this.bodyText = '';
+    this.current = this.WAITING_STATUS_LINE
+    this.statusLine = ''
+    this.headers = {}
+    this.headerName = ''
+    this.headerValue = ''
+    this.bodyParser = null
+    this.bodyText = ''
   }
 
-  get isFinished () {
+  get isFinished() {
     return this.bodyParser && this.bodyParser.isFinished
   }
 
-  get response () {
+  get response() {
     this.statusLine.match(/HTTP\/1.1 ([0-9])+ ([\s\S]+)/)
 
     return {
@@ -118,14 +123,13 @@ class ResponseParser {
     }
   }
 
-  receive (string) {
-    console.log(string)
+  receive(string) {
     for (let i = 0; i < string.length; i++) {
       this.receiveChar(string.charAt(i))
     }
   }
 
-  receiveChar (char) {
+  receiveChar(char) {
     if (this.current === this.WAITING_STATUS_LINE) {
       if (char === '\r') {
         this.current = this.WAITING_STATUS_LINE_END
@@ -139,7 +143,7 @@ class ResponseParser {
     } else if (this.current === this.WAITING_HEADER_NAME) {
       if (char === ':') {
         this.current = this.WAITING_HEADER_SPACE
-      } else if(char === '\r') { 
+      } else if (char === '\r') {
         this.current = this.WAITING_HEADER_BLOCK_END
         if (this.headers['Transfer-Encoding'] === 'chunked') {
           this.bodyParser = new TrunkedBodyParser()
@@ -158,7 +162,7 @@ class ResponseParser {
         this.headerName = ''
         this.headerValue = ''
       } else {
-        this.headerValue += char;
+        this.headerValue += char
       }
     } else if (this.current === this.WAITING_HEADER_LINE_END) {
       if (char === '\n') {
@@ -168,7 +172,7 @@ class ResponseParser {
       if (char === '\n') {
         this.current = this.WAITING_BODY
       }
-    } else if(this.current === this.WAITING_BODY) {
+    } else if (this.current === this.WAITING_BODY) {
       this.bodyParser.receive(char)
 
       if (this.bodyParser.isFinished) {
@@ -179,7 +183,7 @@ class ResponseParser {
 }
 
 class TrunkedBodyParser {
-  constructor () {
+  constructor() {
     this.WAITING_LENGTH = 0
     this.WAITING_LENGTH_LINE_END = 1
     this.READING_TRUNK = 2
@@ -191,7 +195,7 @@ class TrunkedBodyParser {
     this.isFinished = false
     this.current = this.WAITING_LENGTH
   }
-  
+
   receive(char) {
     if (this.current === this.WAITING_LENGTH) {
       if (char === '\r') {
@@ -203,12 +207,12 @@ class TrunkedBodyParser {
         this.length *= 16
         this.length += parseInt(char, 16)
       }
-    } else if(this.current === this.WAITING_LENGTH_LINE_END) {
+    } else if (this.current === this.WAITING_LENGTH_LINE_END) {
       if (char === '\n') {
         this.current = this.READING_TRUNK
       }
-    } else if(this.current === this.READING_TRUNK) {
-      if (char !== '\r' && char !=='\n') {
+    } else if (this.current === this.READING_TRUNK) {
+      if (char !== '\r' && char !== '\n') {
         this.content.push(char)
       }
 
@@ -217,11 +221,11 @@ class TrunkedBodyParser {
       if (this.length === 0) {
         this.current = this.WAITING_NEW_LINE
       }
-    } else if(this.current === this.WAITING_NEW_LINE) {
+    } else if (this.current === this.WAITING_NEW_LINE) {
       if (char === '\r') {
         this.current = this.WAITING_NEW_LINE_END
       }
-    } else if(this.current === this.WAITING_NEW_LINE_END) {
+    } else if (this.current === this.WAITING_NEW_LINE_END) {
       if (char === '\n') {
         this.current = this.WAITING_LENGTH
       }
@@ -229,8 +233,8 @@ class TrunkedBodyParser {
   }
 }
 
-let request = new Request({ 
-  host: '127.0.0.1', 
+let request = new Request({
+  host: '127.0.0.1',
   port: 3000,
   method: 'POST',
   path: '/',
@@ -240,7 +244,8 @@ let request = new Request({
   }
 })
 
-request.send().then(data => {
+request.send().then((data) => {
   // console.log('response: \n=====================\n', data.body, '\n=====================\n')
-  console.log('response: \n=====================\n', parseHTML(data.body), '\n=====================\n')
+  // console.log('response: \n=====================\n', parseHTML(data.body), '\n=====================\n')
+  parseHTML(data.body)
 })
