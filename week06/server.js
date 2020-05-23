@@ -10,17 +10,18 @@ const server = http.createServer((req, res) => {
 <html maaa=a >
 <head>
     <style>
-    body div #myid {
-      width: 100px;
+    body div .a {
+      width: 40px;
       background-color: #ff5000;
     }
-    body div .a {
+
+    body div #myid {
       width: 100px;
       background-color: #ff5000;
     }
 
     body div .b {
-      width: 100px;
+      width: 50px;
       background-color: #ff5000;
     }
     </style>
