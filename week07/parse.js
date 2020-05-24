@@ -1,6 +1,7 @@
 const EOF = Symbol('EOF') // EOF end of file
 const css = require('css')
 const computeCSS = require('./computeCSS')
+const layout = require('./layout')
 
 let currentToken = null
 let currentAttribute = null
@@ -53,6 +54,7 @@ function emit(token) {
       if (top.tagName === 'style') {
         addCSSRules(top.children[0].content)
       }
+      layout(top)
       stack.pop()
     }
 
