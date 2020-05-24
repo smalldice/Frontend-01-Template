@@ -7,7 +7,10 @@
 // response body:    <html><title>response 4040</title></html>
 
 const net = require('net')
+const images = require('images')
 const { parseHTML } = require('./parse')
+const render = require('./render')
+
 /*
  * method: url = host + port + path
  * body: k/v
@@ -248,4 +251,9 @@ request.send().then((data) => {
   // console.log('response: \n=====================\n', data.body, '\n=====================\n')
   // console.log('response: \n=====================\n', parseHTML(data.body), '\n=====================\n')
   parseHTML(data.body)
+
+  let viewport = images(800, 600)
+  render(viewport, dom.children[0])
+
+  viewport.save('viewport.jpg')
 })
