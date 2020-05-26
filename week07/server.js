@@ -13,29 +13,29 @@ const server = http.createServer((req, res) => {
       #container {
         display: flex;
         width: 800px;
-        background-color: rgba(255, 255, 255);
+        background-color: rgb(255, 255, 255);
       }
 
       .item-1 {
         width: 200px;
         height: 100px;
         align-self: center;
-        background-color: rgba(255, 0, 0);
+        background-color: rgb(255, 0, 0);
       }
 
       .item-2 {
         flex: 1;
         height: 200px;
-        background-color: rgba(255, 255, 0);
+        background-color: rgb(255, 255, 0);
       }
     </style>
+</head>
     <body>
       <div id="container">
         <div class="item-1"></div>
         <div class="item-2"></div>
       </div>
     </body>
-</head>
 </html>
 `
   )
