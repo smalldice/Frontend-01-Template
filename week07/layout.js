@@ -1,3 +1,12 @@
+function toCamelCase(str) {
+  const matchRes = str.match(/\-[a-z]/)
+  if (matchRes) {
+    return str.replace(matchRes[0], matchRes[0].charAt(1).toUpperCase())
+  }
+
+  return str
+}
+
 function getStyle(element) {
   if (!element.style) {
     element.style = {}
@@ -5,14 +14,16 @@ function getStyle(element) {
 
   for (let prop in element.computedStyle) {
     let p = element.computedStyle.value
-    element.style[prop] = element.computedStyle[prop].value
+    let key = toCamelCase(prop)
 
-    if (element.style[prop].toString().match(/px$/)) {
-      element.style[prop] = parseInt(element.computedStyle[prop].value)
+    element.style[key] = element.computedStyle[prop].value
+
+    if (element.style[key].toString().match(/px$/)) {
+      element.style[key] = parseInt(element.computedStyle[prop].value)
     }
 
-    if (element.style[prop].toString().match(/^[0-9\.]$/)) {
-      element.style[prop] = parseInt(element.style[prop])
+    if (element.style[key].toString().match(/^[0-9\.]$/)) {
+      element.style[key] = parseInt(element.style[key])
     }
   }
 
@@ -227,7 +238,7 @@ function layout(element) {
     flexLines.forEach((items) => {
       let mainSpace = items.mainSpace
       let flexTotal = 0
-
+      let currentMain
       for (let i = 0; i < items.length; i++) {
         let item = items[i]
         let itemStyle = getStyle(item)
@@ -239,7 +250,8 @@ function layout(element) {
       }
 
       if (flexTotal > 0) {
-        let currentMain = mainBase
+        currentMain = mainBase
+
         for (let i = 0; i < items.length; i++) {
           let itemStyle = getStyle(items[i])
           if (itemStyle.flex) {
@@ -253,28 +265,28 @@ function layout(element) {
       } else {
         let step
         if (style.justifyContent === 'flex-start') {
-          let currentMain = mainBase
+          currentMain = mainBase
           step = 0 // 代表空白
         }
 
         if (style.justifyContent === 'flex-end') {
-          let currentMain = mainSpace * mainSign + mainBase
+          currentMain = mainSpace * mainSign + mainBase
           step = 0
         }
 
         if (style.justifyContent === 'center') {
-          let currentMain = (mainSpace / 2) * mainSign + mainBase
-          step
+          currentMain = (mainSpace / 2) * mainSign + mainBase
+          step = 0
         }
 
         if (style.justifyContent === 'space-between') {
           step = (mainSpace / (item.length - 1)) * mainSign
-          let currentMain = mainBase
+          currentMain = mainBase
         }
 
         if (style.justifyContent === 'space-around') {
           step = (mainSpace / item.length) * mainSign
-          let currentMain = step / 2 + mainBase
+          currentMain = step / 2 + mainBase
         }
 
         for (let i = 0; i < items.length; i++) {
