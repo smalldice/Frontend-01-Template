@@ -122,4 +122,18 @@ var letterValues = Object.assign(lineValues, {
 })
 ```
 
-#### BEM (block element modifier)
+```bash
+avoid BEM (block element modifier) name
+
+html 语义
+// good
+example:
+<div class="img-wrapper">
+  <div class="img-mask"></div>
+  <div class="img-content">
+    <div class="img-content-header"></div>
+    <div class="img-content-body"></div>
+    <div class="img-content-footer"></div>
+  </div>
+</div>
+```
