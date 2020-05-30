@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    /* .a {
+      color: red;
+    } */
+    /* 证明连接符不参与specificity计算 */
+    div > a {
+      color: aqua;
+    }
+
+    div a {
+      color: black;
+    }
+
+    .b::before {
+      content: '2';
+      color: red;
+    }
+
+    .b::first-letter {
+      color: green;
+    }
+
+    .b::first-line {
+      color: yellow;
+    }
+  </style>
+  <body>
+    <div><a class="a">123</a></div>
+    <div class="b">
+      ssss <br />
+      sssss <br />
+      sssss <br />
+      sssss <br />
+      sssss
+    </div>
+  </body>
+</html>
