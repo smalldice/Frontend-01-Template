@@ -616,10 +616,10 @@ function happen(element, event) {
   })
 }
 
-void async function () {
+void (async function () {
   for (let std of trs) {
     iframe.src = std.url
     console.log(std.name)
     await happen(iframe, 'load')
   }
-}
+})()
