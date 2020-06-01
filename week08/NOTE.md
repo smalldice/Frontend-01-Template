@@ -137,3 +137,64 @@ example:
   </div>
 </div>
 ```
+
+## 排版
+
+<p style="color: red;">排版和渲染的基本单位是盒(box)</p>
+
+## box-sizing
+
+<ul>
+  <li>border-box: Width & Height contain
+    <ul>
+      <li>border</li>
+      <li>padding</li>
+      <li>content</li>
+    </ul>
+  </li>
+  <li>content-box: Width & Height contain
+    <ul>
+      <li>content</li>
+    </ul>
+  </li>
+</ul>
+
+## 正常流(normal flow)
+
+### 从左到右 从上到下 行内对齐
+
+### 从左到右是 inline-formatting-box (IFC)
+
+t e inline-box inline-box
+------------------------------------------>
+
+### 从上到下是 block-formatting-box (BFC)
+
+|
+| line-box
+|
+|
+| block-box
+|
+|
+| block-bpx
+
+### 文字
+
+baseline
+inline-block 内没有文字的时候， baseline 在文字下缘
+对齐方式使用 top bottom middle
+
+### float 与 clear
+
+### Margin 折叠
+
+BFC 合并
+overflow: visible
+
+### display value
+
+flex inline-flex
+table inline-table
+grid inline-grid
+block inline-block
