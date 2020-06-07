@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    // layout
+    // interactive
+    // render/draw
+    // other
+    // svg
+    // except value withe prefix '-webkit-'
+    window.onload = function () {
+      const style = window.getComputedStyle(document.body)
+      let properties = []
+      for (let k in style) {
+        if (isNaN(Number(k))) {
+          properties.push(k)
+        } else {
+          properties.push(style[k])
+        }
+      }
+      properties = properties.filter((k) => {
+        return !/^(-)?webkit/.test(k)
+      })
+
+      console.log(properties.length, properties.join('\n'))
+    }
+  </script>
+</html>
