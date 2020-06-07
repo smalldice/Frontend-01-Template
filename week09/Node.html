@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #x {
+        background-color: pink;
+      }
+
+      #b {
+        background-color: chocolate;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="x">
+      <div id="c1">1</div>
+      <div id="c2">2</div>
+      <div id="c3">3</div>
+      <div id="c4">4</div>
+      <div id="c5">5</div>
+      <div id="c6">6</div>
+    </div>
+
+    <div id="b"></div>
+  </body>
+  <script>
+    // setTimeout(() => {
+    //   document.getElementById('c1').appendChild(document.getElementById('b'))
+    //   console.log(document.body.children)
+    // }, 5000)
+    const x = document.getElementById('x')
+    const b = document.getElementById('b')
+    const c1 = document.getElementById('c1')
+    x.addEventListener('click', () => {
+      console.log('x')
+    })
+
+    c1.addEventListener('click', (e) => {
+      e.stopPropagation()
+    })
+    // bad
+    // for (let i = 0; i < x.children.length; i++) {
+    //   b.appendChild(x.children[i])
+    // }
+
+    // good
+    // while (x.children.length) {
+    //   b.appendChild(x.children[0])
+    // }
+
+    // id被复制 & 只有第一个id 为 c1 的 div被找到
+    // for (let i = 0; i < x.children.length; i++) {
+    //   b.appendChild(x.children[i].cloneNode(true))
+    // }
+
+    // setTimeout(() => {
+    //   document.getElementById('c1').innerHTML = 'xxx'
+    // }, 100)
+  </script>
+</html>
