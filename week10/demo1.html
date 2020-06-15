@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="a">
+      <span>1</span>
+      <p>2</p>
+      <a href="">3</a>
+      <div>4</div>
+    </div>
+  </body>
+  <script>
+    // 0分答案
+    let ele = document.getElementById('a')
+
+    function reverseChildren0(ele) {
+      let children = ele.childNodes
+
+      const newChildren = Array.prototype.slice.call(children)
+      newChildren.reverse()
+      for (let child of newChildren) {
+        ele.appendChild(child)
+      }
+    }
+
+    // setTimeout(() => {
+    //   reverseChildren0(ele)
+    // }, 1000)
+
+    // 1分答案
+    function reverseChildren1(ele) {
+      let l = ele.childNodes.length
+      while (l-- > 0) {
+        ele.appendChild(ele.childNodes[l])
+      }
+    }
+
+    // setTimeout(() => {
+    //   reverseChildren1(ele)
+    // }, 1000)
+
+    // 2分答案
+
+    function reverseChildren2(ele) {
+      let range = new Range()
+      range.selectNodeContents(ele)
+      let fragment = range.extractContents()
+      let l = fragment.childNodes.length
+
+      while (l-- > 0) {
+        fragment.appendChild(fragment.childNodes[l])
+      }
+
+      ele.appendChild(fragment)
+    }
+
+    setTimeout(() => {
+      reverseChildren2(ele)
+    }, 1000)
+  </script>
+</html>

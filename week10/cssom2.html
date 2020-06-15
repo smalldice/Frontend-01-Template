@@ -1,0 +1,20 @@
+<style>
+  a::before {
+    content: 'Hello';
+    color: red;
+  }
+</style>
+
+<a>
+  World
+</a>
+
+<script>
+  setTimeout(() => {
+    document.styleSheets[0].insertRule(
+      "a::before { content: 'Hello2'; color: pink; }",
+      1
+    )
+    console.log({ ...document.styleSheets[0].cssRules })
+  }, 1000)
+</script>
