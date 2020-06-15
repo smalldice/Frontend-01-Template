@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .row {
+        margin-bottom: 10px;
+        display: flex;
+      }
+
+      .cell {
+        margin-right: 10px;
+        width: 150px;
+        height: 150px;
+        line-height: 150px;
+        font-size: 90px;
+        text-align: center;
+        color: red;
+        background-color: lightgreen;
+      }
+    </style>
+  </head>
+  <body></body>
+  <script>
+    let pattern = [
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ];
+
+    console.log(pattern);
+
+    let player = Math.random() < 0.5 ? 1 : 2;
+
+    function show() {
+      document.body.innerHTML = "";
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0; i < 3; i++) {
+        const row = document.createElement("div");
+        row.className = "row";
+
+        for (let j = 0; j < 3; j++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          pattern[i][j] === 1 && (cell.innerHTML = "⭕️");
+          pattern[i][j] === 2 && (cell.innerHTML = "❌");
+          row.appendChild(cell);
+          cell.addEventListener("click", () => {
+            plantCell(i, j);
+          });
+        }
+
+        fragment.appendChild(row);
+      }
+
+      document.body.appendChild(fragment);
+    }
+
+    show();
+
+    function plantCell(i, j) {
+      console.log(i, j);
+
+      if (pattern[i][j]) return;
+
+      pattern[i][j] = player;
+      show();
+
+      if (ifWin(pattern, player)) {
+        setTimeout(() => {
+          alert(`winner: ${player % 2 ? "⭕️" : "❌"}`);
+        }, 0);
+
+        return;
+      }
+
+      player = 3 - player;
+    }
+
+    // function ifWin(p) {
+    //   let win = false;
+    //   // 三横
+    //   win = p.some((r) => {
+    //     return r.every((c) => c && c === r[0]);
+    //   });
+    //   // 三纵
+    //   win = p.every((r) => {
+    //     return r.some();
+    //   });
+
+    //   console.log(win);
+    //   return win;
+    // }
+
+    function ifWin(pattern, color, x, y) {
+      for (let i = 0; i < 3; i++) {
+        {
+          let win = true;
+
+          for (let j = 0; j < 3; j++) {
+            if (pattern[i][j] !== color) {
+              win = false;
+              break;
+            }
+          }
+
+          if (win) return true;
+        }
+      }
+
+      for (let i = 0; i < 3; i++) {
+        let win = true;
+
+        for (let j = 0; j < 3; j++) {
+          if (pattern[j][i] !== color) {
+            win = false;
+            break;
+          }
+        }
+
+        if (win) return true;
+      }
+
+      {
+        let win = true;
+
+        for (let j = 0; j < 3; j++) {
+          if (pattern[j][j] !== color) {
+            win = false;
+            break;
+          }
+        }
+
+        if (win) return true;
+      }
+
+      {
+        let win = true;
+
+        for (let j = 0; j < 3; j++) {
+          if (pattern[j][2 - j] !== color) {
+            win = false;
+            break;
+          }
+        }
+
+        if (win) return true;
+      }
+
+      return false;
+    }
+
+    // let pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+  </script>
+</html>
