@@ -29,10 +29,8 @@
       [0, 0, 0],
       [0, 0, 0],
     ];
-
-    console.log(pattern);
-
-    let player = Math.random() < 0.5 ? 1 : 2;
+    let color = Math.random() < 0.5 ? 1 : 2;
+    let isFinished = false;
 
     function show() {
       document.body.innerHTML = "";
@@ -62,22 +60,24 @@
     show();
 
     function plantCell(i, j) {
-      console.log(i, j);
+      if (pattern[i][j] || isFinished) return;
 
-      if (pattern[i][j]) return;
-
-      pattern[i][j] = player;
+      pattern[i][j] = color;
       show();
 
-      if (ifWin(pattern, player)) {
+      if (ifWin(pattern, color)) {
         setTimeout(() => {
-          alert(`winner: ${player % 2 ? "⭕️" : "❌"}`);
+          alert(`winner: ${color === 1 ? "⭕️" : "❌"}`);
         }, 0);
 
+        isFinished = true;
         return;
       }
 
-      player = 3 - player;
+      color = 3 - color;
+      if (willWin(color)) {
+        console.log(`${color === 1 ? "⭕️" : "❌"} will win`);
+      }
     }
 
     function ifWin(pattern, color, x, y) {
@@ -133,6 +133,26 @@
         }
 
         if (win) return true;
+      }
+
+      return false;
+    }
+
+    function clone() {
+      return JSON.parse(JSON.stringify(pattern));
+    }
+
+    function willWin(color) {
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (pattern[i][j]) continue;
+          let tmp = clone();
+          tmp[i][j] = color;
+          console.log(tmp[i][j], color);
+          if (ifWin(tmp, color)) {
+            return true;
+          }
+        }
       }
 
       return false;
