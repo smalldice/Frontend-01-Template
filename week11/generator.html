@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        display: flex;
+      }
+
+      div {
+        width: 100px;
+        height: 100px;
+        border-radius: 50px;
+        background-color: gray;
+        margin-right: 40px;
+      }
+
+      .active:nth-child(1) {
+        background-color: green;
+      }
+      .active:nth-child(2) {
+        background-color: yellow;
+      }
+      .active:nth-child(3) {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+    <div></div>
+    <div></div>
+  </body>
+  <script>
+    function sleep(time) {
+      return new Promise((resolve) => {
+        console.log(time)
+        setTimeout(resolve, time)
+      })
+    }
+
+    function lightUp(index) {
+      const collections = document.querySelectorAll('div')
+      for (let i = 0; i < collections.length; i++) {
+        collections[i].className = i === index ? 'active' : ''
+      }
+    }
+
+    function* g() {
+      let i = 0
+
+      while (true) {
+        lightUp(i)
+        i++
+        i === 3 && (i = 0)
+
+        switch (i) {
+          case 1:
+            yield sleep(10000)
+            break
+          case 2:
+            yield sleep(2000)
+            break
+          case 0:
+            yield sleep(5000)
+        }
+      }
+    }
+
+    function co(itr) {
+      let { value: p, down } = itr.next()
+      if (down) return
+
+      p.then(() => {
+        co(itr)
+      })
+    }
+
+    co(g())
+  </script>
+</html>

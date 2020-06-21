@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .row {
+        display: flex;
+      }
+
+      .cell {
+        width: 8px;
+        height: 8px;
+        background-color: gray;
+        border: 1px solid #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <button onclick="localStorage.map = JSON.stringify(map)">save</button>
+    <button onclick="localStorage.removeItem('map');window.location.reload();">
+      clear
+    </button>
+  </body>
+  <script>
+    const map = localStorage.map
+      ? JSON.parse(localStorage.map)
+      : new Array(10000).fill(0)
+    let mousedown = false
+    let clear = false
+
+    function createGrids() {
+      let fragment = document.createDocumentFragment()
+
+      for (let y = 0; y < 100; y++) {
+        let row = document.createElement('div')
+        row.className = 'row'
+
+        for (let x = 0; x < 100; x++) {
+          let cell = document.createElement('div')
+          cell.className = 'cell'
+          map[y * 100 + x] && console.log(map[y * 100 + x])
+          cell.style.backgroundColor = map[y * 100 + x] ? 'black' : 'gray'
+          cell.addEventListener('mousemove', () => {
+            if (!mousedown) return
+
+            if (clear) {
+              cell.style.backgroundColor = 'gray'
+              map[y * 100 + x] = 0
+            } else {
+              cell.style.backgroundColor = 'black'
+              map[y * 100 + x] = 1
+            }
+          })
+          row.appendChild(cell)
+        }
+
+        fragment.appendChild(row)
+      }
+
+      document.getElementById('container').appendChild(fragment)
+    }
+
+    createGrids()
+
+    document.addEventListener('mousedown', (e) => {
+      mousedown = true
+      clear = e.which === 3
+    })
+
+    document.addEventListener('mouseup', () => (mousedown = false))
+    document.addEventListener('contextmenu', (e) => e.preventDefault())
+  </script>
+</html>
