@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    // String.prototype.match
+
+    'abc'.match(/a(b)|c/)
+
+    // String.prototype.replace
+
+    'abc'.match(/b/, (str, $1) => {
+      return '(' + $1 + ')'
+    })
+  </script>
+</html>
